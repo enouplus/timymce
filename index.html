@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Post</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css" integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK" crossorigin="anonymous">
+    <style>
+        .form-control,.form-select,.btn
+        {
+            border-radius: 0;
+        }
+    </style>
+</head>
+<body>
+
+
+    <div class="input-group">
+        <button onclick="$('#post_settings').slideToggle()" class="btn btn-primary">&#x26F6;</button>
+        <input id="input_pdate" type="datetime-local" placeholder="enter post date" class="form-control"  id="">
+        <select id="input_pstatus" class="form-select">
+            <option value="0">Draft</option>
+            <option value="1" selected>Published</option>
+        </select>
+        <button onclick='addPost();' class="btn btn-primary">Save</button>
+    </div>
+
+    <div class="p-3">
+        <div id="post_settings">
+            <input id="input_ptitle" type="text" placeholder="enter post title" class="form-control">
+            <input id="input_pslug" type="text" placeholder="enter post slug [a-zA-Z0-9]" class="form-control">
+            <input id="input_pdesc" type="text" placeholder="enter post description" class="form-control">
+            <input id="input_ptimg" type="text" placeholder="enter post thumbnail image url" class="form-control">
+        </div>
+        <textarea class="form-control" id="input_pcontent" placeholder="enter post content"></textarea>
+    </div>
+    
+    <script src="http://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="tinymce.min.js" ></script>
+    <script>
+
+
+        tinymce.init
+        ({
+            selector: 'textarea#input_pcontent',
+            menubar:false,
+            statusbar: false,
+            height : 300,
+            plugins: "link code lists buttons table",
+            toolbar: 'bold italic underline | styleselect | numlist bullist | table |outdent indent | link buttons image| code'
+        });
+
+        function isValidDate(d) 
+        {
+            return ;
+        }
+
+        const input_pdate=document.getElementById('input_pdate');
+        const input_pstatus=document.getElementById('input_pstatus');
+        const input_ptitle=document.getElementById('input_ptitle');
+        const input_pslug=document.getElementById('input_pslug');
+        const input_pdesc=document.getElementById('input_pdesc');
+        const input_ptimg=document.getElementById('input_ptimg');
+        const input_pcontent=document.getElementById('input_pcontent');
+
+        function addPost()
+        {
+            var pdate=new Date(input_pdate.value);
+            if(pdate instanceof Date && !isNaN(pdate)==false)pdate=new Date();
+            var pstatus=input_pstatus.value;
+            var ptitle=input_ptitle.value;
+            var pslug=input_pslug.value.trim();
+            var pslug=input_pslug.value.trim().replace(/[^a-zA-Z0-9]/g,'-');
+            if(pslug.length<1){alert("POST SLUG IS EMPTY");return;}
+            var pdesc=input_pdesc.value.trim();
+            var ptimg=input_ptimg.value.trim();
+            var pcontent=tinymce.get("input_pcontent").getContent();
+
+            $.ajax
+            ({
+                type : "POST",
+                url  : "",
+                data :
+                {
+                    pdate    : pdate,
+                    pstatus  : pstatus,
+                    ptitle   : ptitle,
+                    pslug    : pslug,
+                    pdesc    : pdesc,
+                    ptimg    : ptimg,
+                    pcontent : pcontent
+                },
+                success : function(response)
+                {
+                    alert(response);
+                },
+                error : function(jqXHR,textStatus,exception)
+                {
+                    alert(exception);
+                }
+            });
+
+
+        }
+
+
+    </script>
+</body>
+</html>
